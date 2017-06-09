@@ -3,22 +3,14 @@ var gulp = require('gulp'),
   concat = require('gulp-concat'),
   notify = require("gulp-notify"),
   rename = require('gulp-rename'),
-  jshint = require('gulp-jshint'),
   minifycss = require('gulp-minify-css'),
-  del = require('del'),
-  browserSync = require('browser-sync').create();
+  del = require('del');
 
 gulp.task('clean', function() {
   del(['dist'])
 });
 
-gulp.task('lint', function() {
-  return gulp.src('./src/**/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'));
-});
-
-gulp.task('scripts', ['lint'], function() {
+gulp.task('scripts', function() {
   return gulp.src('src/**/*.js')
     .pipe(concat('d3.flameGraph.js'))
     .pipe(gulp.dest('dist'))
@@ -38,13 +30,3 @@ gulp.task('styles', function() {
 });
 
 gulp.task('dist', ['clean', 'scripts', 'styles']);
-
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        server: {
-            baseDir: ['example', 'src', 'bower_components']
-        }
-    });
-});
-
-gulp.task('default', ['browser-sync']);

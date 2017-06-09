@@ -16,6 +16,10 @@
       padding-bottom: 20px;
     }
 
+    .chart {
+      text-align: center;
+    }
+
     /* Custom page header */
     .header {
       padding-bottom: 20px;
@@ -33,11 +37,11 @@
 
     /* Customize container */
     .container {
-      max-width: 990px;
+      max-width: 1900px;
     }
     </style>
 
-    <title>d3-flame-graph</title>
+    <title>Cascade Inspector</title>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -60,13 +64,14 @@
             </form>
           </div>
         </nav>
-        <h3 class="text-muted">d3-flame-graph</h3>
-      </div>
-      <div id="chart">
+        <h3 class="text-muted">Cascade Inspector</h3>
       </div>
       <hr>
-      <div id="details">
-      </div>
+    </div>
+
+    <div id="chart" class="chart">
+    </div>
+    <div id="details">
     </div>
 
     <script type="text/javascript" src="d3/d3.js"></script>
@@ -76,8 +81,8 @@
 
     <script type="text/javascript">
     var flameGraph = d3.flameGraph()
-      .height(540)
-      .width(960)
+      .height(800)
+      .width(window.innerWidth / 12 * 11)
       .cellHeight(18)
       .transitionDuration(750)
       .transitionEase('cubic-in-out')
@@ -104,12 +109,20 @@
 
     // flameGraph.label(label);
 
+    // possible automation:
+    /*
+    var data = {};
+    */
     d3.json("stacks.json", function(error, data) {
       if (error) return console.warn(error);
       d3.select("#chart")
           .datum(data)
           .call(flameGraph);
     });
+
+    d3.select("#chart")
+        .datum(data)
+        .call(flameGraph);
 
     document.getElementById("form").addEventListener("submit", function(event){
       event.preventDefault();
@@ -118,7 +131,12 @@
 
     function search() {
       var term = document.getElementById("term").value;
-      flameGraph.search(term);
+      var matches = flameGraph.search(term);
+      var size = 0;
+      for (match in matches) {
+        size += matches[match].executionTotalTime;
+      }
+      console.log("Size: " + size)
     }
 
     function clear() {
